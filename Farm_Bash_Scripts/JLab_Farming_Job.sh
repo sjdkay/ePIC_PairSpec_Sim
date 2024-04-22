@@ -41,7 +41,7 @@ fi
 # Check if an argument was provided for Arg4, if not, set 10
 if [[ -z "$4" ]]; then
     Arg4=10
-    echo "Egamma_end not specified, defaulting to 10"
+    echo "Arg4 not specified, defaulting to 10"
 else
     Arg4=$4
 fi
@@ -78,33 +78,17 @@ EOF
 else
 cat <<EOF | $EICSHELL
 source Init_Env.sh
-echo; echo; echo "Generating events."; echo; echo;
-cd ${SimDir}/ePIC_PairSpec_Sim/simulations/
-if (( $(echo "$Egamma_start == $Egamma_end" | bc -l) )); then
-echo "Egamma_start (${Egamma_start}) = Egamma_end (${Egamma_end}), running flat distribution"
-root -l -b -q 'lumi_particles.cxx(${NumEvents}, true, false, false, ${Egamma_start}, ${Egamma_end},"${Output_tmp}/genParticles_PhotonsAtIP_${FileNum}_${NumEvents}.hepmc")'
-else
-echo "Egamma_start (${Egamma_start}) != Egamma_end (${Egamma_end}), running BH distribution"
-root -l -b -q 'lumi_particles.cxx(${NumEvents}, false, false, false, ${Egamma_start}, ${Egamma_end},"${Output_tmp}/genParticles_PhotonsAtIP_${FileNum}_${NumEvents}.hepmc")'
-fi
-sleep 5
-abconv ${Output_tmp}/genParticles_PhotonsAtIP_${FileNum}_${NumEvents}.hepmc --plot-off -o ${Output_tmp}/abParticles_PhotonsAtIP_${FileNum}_${NumEvents}
-echo; echo; echo "Events generated and afterburned, propagating and converting."; echo; echo;
+
+# Add any event generation steps here
+
+# Add any input files in as needed
+npsim -v 4 --inputFiles PATH_TO_INPUT_FILE --outputFile ${Output_tmp}/ddsimOut_${FileNum}_${NumEvents}.edm4hep.root --compactFile ${SimDir}/epic/epic_ip6.xml -N ${NumEvents}
 sleep 5
 
-root -b -l -q 'PropagateAndConvert.cxx("${Output_tmp}/genParticles_PhotonsAtIP_${FileNum}_${NumEvents}.hepmc", "${Output_tmp}/genParticles_electrons_${FileNum}_${NumEvents}.hepmc", -58000)'
-sleep 5
-root -b -l -q 'PropagateAndConvert.cxx("${Output_tmp}/abParticles_PhotonsAtIP_${FileNum}_${NumEvents}.hepmc", "${Output_tmp}/abParticles_electrons_${FileNum}_${NumEvents}.hepmc", -58000)'
-sleep 5
-
-echo; echo; echo "Events propagated and converted, running simulation."; echo; echo;
-
-npsim -v 4 --inputFiles ${Output_tmp}/abParticles_electrons_${FileNum}_${NumEvents}.hepmc --outputFile ${Output_tmp}/ddsimOut_${FileNum}_${NumEvents}.edm4hep.root --compactFile ${SimDir}/epic/epic_ip6_FB.xml -N ${NumEvents}
-sleep 5
-
+# Run reconstruction, add any plugins you want to use
 echo; echo; echo "Simulation finished, running reconstruction."; echo; echo;
 cd $Output_tmp
-eicrecon -Pplugins=analyzeLumiHits -Pjana:nevents=${NumEvents} -Phistsfile=EICReconOut_${FileNum}_${NumEvents}.root ${Output_tmp}/ddsimOut_${FileNum}_${NumEvents}.edm4hep.root 
+eicrecon -Pplugins=PLUGINS -Pjana:nevents=${NumEvents} -Phistsfile=EICReconOut_${FileNum}_${NumEvents}.root ${Output_tmp}/ddsimOut_${FileNum}_${NumEvents}.edm4hep.root 
 sleep 5
 
 echo; echo; echo "Reconstruction finished, output file is - ${Output_tmp}/EICReconOut_${FileNum}_${NumEvents}.root"; echo; echo;
