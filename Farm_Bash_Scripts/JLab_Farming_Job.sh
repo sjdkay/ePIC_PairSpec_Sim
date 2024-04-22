@@ -1,11 +1,12 @@
 #! /bin/bash
 
 ### Stephen Kay, University of York
-### 26/05/23
+### 22/04/24
 ### stephen.kay@york.ac.uk
-### A script to execute an individual simulation for the far backward pair spectrometer
-### Input args are - FileNum NumEvents Egamma_start (optional) Egamma_end (optional) SpagCal (optional)
-### Intended to be fed to some swif2 job submission script
+### A script to process some commands within eic-shell. In this example, the simulation is run and then reconstructed.
+### Steps to generate files from an event generator can be included in the relevant section.
+### This script can be run on its own, or fed into a job on the farm
+### VERIFY that it runs interactively for a small sample before submitting a large job!
 
 SimDir="/group/eic/users/${USER}/ePIC/" # Put in the path of your directory here (where your eic-shell is)
 echo "Running as ${USER}"
