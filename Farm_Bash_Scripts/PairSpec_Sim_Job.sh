@@ -62,7 +62,6 @@ fi
 export EICSHELL=${SimDir}/eic-shell
 cd ${SimDir}
 # Run EIC shell, generate the events, afterburn them, run the simulation, reconstruct the events
-# Note, no obvious way to reduce screen dump from eicreon, so piping output to dev/null for now
 
 if test -f "${Output_tmp}/ddsimOut_${FileNum}_${NumEvents}.edm4hep.root"; then
     # Should add additional checks on this, check how old files is (if before 2024, run anyway, if small, re-rerun etc)
@@ -77,7 +76,6 @@ echo; echo; echo "Reconstruction finished, output file is - ${Output_tmp}/EICRec
 EOF
 else
 cat <<EOF | $EICSHELL
-
 source Init_Env.sh
 echo; echo; echo "Generating events."; echo; echo;
 cd ${SimDir}/ePIC_PairSpec_Sim/simulations/

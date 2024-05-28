@@ -14,12 +14,12 @@ CALAnalysis::CALAnalysis() {
 // The data structures from the simulation have to be passed for each event
 //-------------------------------------------------------------------------
 void CALAnalysis::Prepare(std::vector<const edm4hep::SimCalorimeterHit*> &CalHits, 
-      std::vector<const edm4hep::RawCalorimeterHit*> &CALadc, 
-      std::vector<const edm4eic::CalorimeterHit*> &CALrecHits,
-      std::vector<const edm4eic::ProtoCluster*> &CALprotoClusters,
-      std::vector<const edm4eic::Cluster*> &CALClusters,
-      std::vector<const edm4hep::SimTrackerHit*> &tracker_hits,
-      std::shared_ptr<DD4hep_service> geoSvc ) {
+			  std::vector<const edm4hep::RawCalorimeterHit*> &CALadc, 
+			  std::vector<const edm4eic::CalorimeterHit*> &CALrecHits,
+			  std::vector<const edm4eic::ProtoCluster*> &CALprotoClusters,
+			  std::vector<const edm4eic::Cluster*> &CALClusters,
+			  std::vector<const edm4hep::SimTrackerHit*> &tracker_hits,
+			  std::shared_ptr<DD4hep_service> geoSvc ) {
 
   m_CALhits = CalHits;
   m_CALadc = CALadc;
@@ -164,15 +164,22 @@ void CALAnalysis::FillDiagnostics() {
   // Reset histograms before looping over hits for new event
   ((TH2D *)gHistList->FindObject("h2ZXETop_1mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZXETop_3mm_Event"))->Reset();
+  ((TH2D *)gHistList->FindObject("h2ZXETop_4p5mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZXETop_9mm_Event"))->Reset();  
+
   ((TH2D *)gHistList->FindObject("h2ZXEBot_1mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZXEBot_3mm_Event"))->Reset();
+  ((TH2D *)gHistList->FindObject("h2ZXEBot_4p5mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZXEBot_9mm_Event"))->Reset();  
+
   ((TH2D *)gHistList->FindObject("h2ZYETop_1mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZYETop_3mm_Event"))->Reset();
+  ((TH2D *)gHistList->FindObject("h2ZYETop_4p5mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZYETop_9mm_Event"))->Reset();  
+
   ((TH2D *)gHistList->FindObject("h2ZYEBot_1mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZYEBot_3mm_Event"))->Reset();
+  ((TH2D *)gHistList->FindObject("h2ZYEBot_4p5mm_Event"))->Reset();
   ((TH2D *)gHistList->FindObject("h2ZYEBot_9mm_Event"))->Reset();  
 
   for( auto hit : m_CALhits ) { 
@@ -201,23 +208,33 @@ void CALAnalysis::FillDiagnostics() {
       m_CALtophits_total++;
       if (variables::lay_id % 2 != 0 ){ // Layer 0 is orientated horizontally (y info), layer 1 is orientated vertically (x info) and so on. So if layer is even, y info, else, x info
 	((TH1D *)gHistList->FindObject("h1XTop"))->Fill( vec.x );
+
 	((TH2D *)gHistList->FindObject("h2ZXETop_1mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXETop_3mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZXETop_4p5mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXETop_9mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZXETop_1mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXETop_3mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZXETop_4p5mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXETop_9mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZdXTop"))->Fill( vec.z, vec.x-variables::Xpositron, hit->getEnergy() );
 
       }
       if (variables::lay_id % 2 == 0 ){ // Layer 0 is orientated horizontally (y info), layer 1 is orientated vertically (x info) and so on. So if layer is even, y info, else, x info
 	((TH1D *)gHistList->FindObject("h1YTop"))->Fill( vec.y );
+
 	((TH2D *)gHistList->FindObject("h2ZYETop_1mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYETop_3mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZYETop_4p5mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYETop_9mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZYETop_1mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYETop_3mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZYETop_4p5mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYETop_9mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZdYTop"))->Fill( vec.z, vec.y-variables::Ypositron, hit->getEnergy() );
       }
       ((TH2D *)gHistList->FindObject("h2ZETop"))->Fill( vec.z, hit->getEnergy() );
@@ -227,22 +244,32 @@ void CALAnalysis::FillDiagnostics() {
       m_CALbothits_total++;
       if (variables::lay_id % 2 != 0 ){
 	((TH1D *)gHistList->FindObject("h1XBot"))->Fill( vec.x );
+
 	((TH2D *)gHistList->FindObject("h2ZXEBot_1mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXEBot_3mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZXEBot_4p5mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXEBot_9mm"))->Fill( vec.z, vec.x, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZXEBot_1mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXEBot_3mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZXEBot_4p5mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZXEBot_9mm_Event"))->Fill( vec.z, vec.x, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZdXBot"))->Fill( vec.z, vec.x-variables::Xelectron, hit->getEnergy() );
       }
       if (variables::lay_id % 2 == 0 ){ 
 	((TH1D *)gHistList->FindObject("h1YBot"))->Fill( vec.y );
+
 	((TH2D *)gHistList->FindObject("h2ZYEBot_1mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYEBot_3mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZYEBot_4p5mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYEBot_9mm"))->Fill( vec.z, vec.y, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZYEBot_1mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYEBot_3mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
+	((TH2D *)gHistList->FindObject("h2ZYEBot_4p5mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
 	((TH2D *)gHistList->FindObject("h2ZYEBot_9mm_Event"))->Fill( vec.z, vec.y, hit->getEnergy() );
+
 	((TH2D *)gHistList->FindObject("h2ZdYBot"))->Fill( vec.z, vec.y-variables::Yelectron, hit->getEnergy() );
       }
       ((TH2D *)gHistList->FindObject("h2ZEBot"))->Fill( vec.z, hit->getEnergy() );
@@ -274,6 +301,7 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdXTop_1mm"))->Fill(m_E_CALtophits_total, dx);
       ((TH2D *)gHistList->FindObject("h2EMCdXTop_1mm"))->Fill(variables::Epositron, dx);
     }   
+
     ((TH2D *)gHistList->FindObject("h2ZXETop_3mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZXETop_3mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXETop_3mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -284,6 +312,18 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdXTop_3mm"))->Fill(m_E_CALtophits_total, dx);
       ((TH2D *)gHistList->FindObject("h2EMCdXTop_3mm"))->Fill(variables::Epositron, dx);
     }   
+
+    ((TH2D *)gHistList->FindObject("h2ZXETop_4p5mm_Event"))->FitSlicesY(0,0,-1.0);
+    TH1D* h2ZXETop_4p5mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXETop_4p5mm_Event_1"); 
+    posres_pol1->SetParameters(0,0);
+    fitStatus = h2ZXETop_4p5mm_Event_1->Fit("posres_pol1","QN");
+    if (fitStatus<2){
+      double dx = posres_pol1->Eval(-63990) - xhit_TopTrack2; // Subtract tracker hit value
+      xpos_top = (posres_pol1->Eval(-64000))/10; // Evaluate x hit position of event on calorimeter face
+      ((TH2D *)gHistList->FindObject("h2EdXTop_4p5mm"))->Fill(m_E_CALtophits_total, dx);
+      ((TH2D *)gHistList->FindObject("h2EMCdXTop_4p5mm"))->Fill(variables::Epositron, dx);
+    }   
+
     ((TH2D *)gHistList->FindObject("h2ZXETop_9mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZXETop_9mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXETop_9mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -294,6 +334,7 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EMCdXTop_9mm"))->Fill(variables::Epositron, dx);
     } 
     // Fit slices of h2ZYE
+
     ((TH2D *)gHistList->FindObject("h2ZYETop_1mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZYETop_1mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYETop_1mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -303,6 +344,7 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdYTop_1mm"))->Fill(m_E_CALtophits_total, dy);
       ((TH2D *)gHistList->FindObject("h2EMCdYTop_1mm"))->Fill(variables::Epositron, dy);
     }   
+
     ((TH2D *)gHistList->FindObject("h2ZYETop_3mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZYETop_3mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYETop_3mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -313,6 +355,18 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdYTop_3mm"))->Fill(m_E_CALtophits_total, dy);
       ((TH2D *)gHistList->FindObject("h2EMCdYTop_3mm"))->Fill(variables::Epositron, dy);
     }   
+
+    ((TH2D *)gHistList->FindObject("h2ZYETop_4p5mm_Event"))->FitSlicesY(0,0,-1.0);
+    TH1D* h2ZYETop_4p5mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYETop_4p5mm_Event_1"); 
+    posres_pol1->SetParameters(0,0);
+    fitStatus = h2ZYETop_4p5mm_Event_1->Fit("posres_pol1","QN");
+    if (fitStatus<2){
+      double dy = posres_pol1->Eval(-63990) - yhit_TopTrack2; // Subtract tracker hit value
+      ypos_top = (posres_pol1->Eval(-64000))/10; // Evaluate y hit position of event on calorimeter face
+      ((TH2D *)gHistList->FindObject("h2EdYTop_4p5mm"))->Fill(m_E_CALtophits_total, dy);
+      ((TH2D *)gHistList->FindObject("h2EMCdYTop_4p5mm"))->Fill(variables::Epositron, dy);
+    }   
+
     ((TH2D *)gHistList->FindObject("h2ZYETop_9mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZYETop_9mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYETop_9mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -343,6 +397,7 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdXBot_1mm"))->Fill(m_E_CALbothits_total, dx);
       ((TH2D *)gHistList->FindObject("h2EMCdXBot_1mm"))->Fill(variables::Eelectron, dx);
     }   
+
     ((TH2D *)gHistList->FindObject("h2ZXEBot_3mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZXEBot_3mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXEBot_3mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -353,6 +408,18 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdXBot_3mm"))->Fill(m_E_CALbothits_total, dx);
       ((TH2D *)gHistList->FindObject("h2EMCdXBot_3mm"))->Fill(variables::Eelectron, dx);
     }   
+
+    ((TH2D *)gHistList->FindObject("h2ZXEBot_4p5mm_Event"))->FitSlicesY(0,0,-1.0);
+    TH1D* h2ZXEBot_4p5mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXEBot_4p5mm_Event_1"); 
+    posres_pol1->SetParameters(0,0);
+    fitStatus = h2ZXEBot_4p5mm_Event_1->Fit("posres_pol1","QN");
+    if (fitStatus<2){
+      double dx = posres_pol1->Eval(-63990) - xhit_BotTrack2; // Subtract tracker hit value
+      xpos_bot = (posres_pol1->Eval(-64000))/10; // Evaluate x hit position of event on calorimeter face
+      ((TH2D *)gHistList->FindObject("h2EdXBot_4p5mm"))->Fill(m_E_CALbothits_total, dx);
+      ((TH2D *)gHistList->FindObject("h2EMCdXBot_4p5mm"))->Fill(variables::Eelectron, dx);
+    }   
+
     ((TH2D *)gHistList->FindObject("h2ZXEBot_9mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZXEBot_9mm_Event_1  = (TH1D*)gDirectory->Get("h2ZXEBot_9mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -372,6 +439,7 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdYBot_1mm"))->Fill(m_E_CALbothits_total, dy);
       ((TH2D *)gHistList->FindObject("h2EMCdYBot_1mm"))->Fill(variables::Eelectron, dy);
     }   
+
     ((TH2D *)gHistList->FindObject("h2ZYEBot_3mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZYEBot_3mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYEBot_3mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -382,6 +450,18 @@ void CALAnalysis::FillDiagnostics() {
       ((TH2D *)gHistList->FindObject("h2EdYBot_3mm"))->Fill(m_E_CALbothits_total, dy);
       ((TH2D *)gHistList->FindObject("h2EMCdYBot_3mm"))->Fill(variables::Eelectron, dy);
     }   
+
+    ((TH2D *)gHistList->FindObject("h2ZYEBot_4p5mm_Event"))->FitSlicesY(0,0,-1.0);
+    TH1D* h2ZYEBot_4p5mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYEBot_4p5mm_Event_1"); 
+    posres_pol1->SetParameters(0,0);
+    fitStatus = h2ZYEBot_4p5mm_Event_1->Fit("posres_pol1","QN");
+    if (fitStatus<2){
+      double dy = posres_pol1->Eval(-63990) - yhit_BotTrack2; // Subtract tracker hit value
+      ypos_bot = (posres_pol1->Eval(-64000))/10; // Evaluate y hit position of event on calorimeter face
+      ((TH2D *)gHistList->FindObject("h2EdYBot_4p5mm"))->Fill(m_E_CALbothits_total, dy);
+      ((TH2D *)gHistList->FindObject("h2EMCdYBot_4p5mm"))->Fill(variables::Eelectron, dy);
+    }   
+
     ((TH2D *)gHistList->FindObject("h2ZYEBot_9mm_Event"))->FitSlicesY(0,0,-1.0);
     TH1D* h2ZYEBot_9mm_Event_1  = (TH1D*)gDirectory->Get("h2ZYEBot_9mm_Event_1"); 
     posres_pol1->SetParameters(0,0);
@@ -399,6 +479,7 @@ void CALAnalysis::FillDiagnostics() {
     }
     ((TH2D *)gHistList->FindObject("h2XYEBot"))->Fill(xpos_bot*10, ypos_bot*10 , m_E_CALbothits_total/0.0263); // Quick version for now, define an actual sampling fraction variable and use this!
   }
+
   // Coincidence filling condition
   if(m_CALtophits_total > 0 && m_CALbothits_total > 0 && m_E_CALtophits_total > 0.05 && m_E_CALbothits_total > 0.05){
     ((TH1D *)gHistList->FindObject("h1ErawTotalCoin"))->Fill(m_E_CALtophits_total + m_E_CALbothits_total);

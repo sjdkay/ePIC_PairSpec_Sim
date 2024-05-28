@@ -30,8 +30,7 @@ std::tuple<double, double> SD_BH(double Emin, double Emax);
 std::tuple<double, double> SD_BH_trf();
 std::vector<GenParticlePtr> GenBHphoton();
 std::vector<GenParticlePtr> GenConvertedElectrons();
-void InitializeFunctions();
-
+void InitializeFunctions(double EBeam);
 
 TF1 *BH_E_trf;
 TF1 *BH_E;
@@ -74,10 +73,15 @@ double pionMass = 0.13957039;
 // Random number generator
 TRandom* RandN = new TRandom();
 
-
-void lumi_particles(int n_events = 1e5, bool flat=false, bool convert = false, bool displaceVertices = false, double Egamma_start = 5.0, double Egamma_end = 18.0, string out_fname="genParticles.hepmc") {
+void lumi_particles(int n_events = 1e5, bool flat=false, bool convert = false, bool displaceVertices = false, double Egamma_start = 5.0, double Egamma_end = 18.0, string out_fname="genParticles.hepmc", double EBeam = 18, double HBeam = 275) {
  
   RandN->SetSeed(0);
+  //SJDK - 24/05/22 - Set electron/hadron pz to whatever input beam energies are
+  electronPz = -EBeam;
+  hadronPz = HBeam;
+
+  cout << electronPz << "   " << EBeam << endl;
+  cout << hadronPz << "   " << HBeam << endl;
 
   TFile *fout = new TFile("genEventsDiagnostics.root","RECREATE");
   TH1D *BH_h1 = new TH1D("BH_h1","E",100,0,10);
@@ -92,7 +96,7 @@ void lumi_particles(int n_events = 1e5, bool flat=false, bool convert = false, b
   
   GenEvent evt(Units::GEV, Units::MM);
  
-  InitializeFunctions();
+  InitializeFunctions(EBeam);
   
   // Create events
   for (events_parsed = 0; events_parsed < n_events; events_parsed++) {
@@ -218,15 +222,16 @@ std::tuple <int, double> extract_particle_parameters(std::string particle_name) 
 }
 
 //----------------------------------------------------------------------------
-void InitializeFunctions() {
+void InitializeFunctions(double EBeam = 18) {
         
+  cout << EBeam << endl;
   electron.SetXYZM(0, 0, electronPz, electronMass);
   hadron.SetXYZM(0, 0, hadronPz, protonMass);
   electron_trf = electron;
   electron_trf.Boost(0, 0, -hadron.Beta());
 
   // Bethe-Heitler photon energy in the Lab Frame
-  BH_E = new TF1("BH_E", "[0] * ([1] - x)/(x*[1])*([1]/([1] - x) + ([1] - x)/[1] - 2/3.)*(log(4*[2]*[1]*([1] - x)/([3]*[4]*x)) - 0.5)", 0.1,18);
+  BH_E = new TF1("BH_E", "[0] * ([1] - x)/(x*[1])*([1]/([1] - x) + ([1] - x)/[1] - 2/3.)*(log(4*[2]*[1]*([1] - x)/([3]*[4]*x)) - 0.5)", 0.1,EBeam);
   BH_E->SetParameter( 0, Z*Z*prefactor );
   BH_E->SetParameter( 1, fabs( electron.E() ) );
   BH_E->SetParameter( 2, fabs( hadron.E() ) );
@@ -234,7 +239,7 @@ void InitializeFunctions() {
   BH_E->SetParameter( 4, electronMass );
   BH_E->SetNpx( 10000 );
 
-  BH_E_trf = new TF1("BH_E_trf", "[0] * ([1] - x)/(x*[1])*([1]/([1] - x) + ([1] - x)/[1] - 2/3.)*(log(2*[1]*([1] - x)/([2]*x)) - 0.5)", 0.1,18);
+  BH_E_trf = new TF1("BH_E_trf", "[0] * ([1] - x)/(x*[1])*([1]/([1] - x) + ([1] - x)/[1] - 2/3.)*(log(2*[1]*([1] - x)/([2]*x)) - 0.5)", 0.1,EBeam);
   BH_E_trf->SetParameter( 0, Z*Z*prefactor );
   //BH_E_trf->SetParameter( 1, fabs( electron.E() ) );
   //cout<<electron.E()<<"  "<<electron_trf.E()<<endl;

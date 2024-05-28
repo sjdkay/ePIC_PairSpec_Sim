@@ -55,7 +55,7 @@ else
 	echo "!!! EGamma_end is not an integer !!!" >&2; exit 5
     fi
     if (( $Egamma_end > 25 )); then # If Egamma end is too high, set it to 25
-	Egamma_end=125
+	Egamma_end=25
     fi	
 fi
 
@@ -146,6 +146,7 @@ do
     	echo "COMMAND:${SimDir}/ePIC_PairSpec_Sim/Farm_Bash_Scripts/PairSpec_Sim_Job.sh ${i} ${NumEvents} ${Egamma_start} ${Egamma_end} ${SpagCal}" >> ${batch}
     else
     	echo "COMMAND:${SimDir}/ePIC_PairSpec_Sim/Farm_Bash_Scripts/PairSpec_Sim_Job.sh ${i} ${NumEvents} ${Egamma_start} ${Egamma_end}" >> ${batch}
+    	#echo "COMMAND:${SimDir}/ePIC_PairSpec_Sim/Farm_Bash_Scripts/PairSpec_Sim_Job_Test.sh ${i} ${NumEvents} ${Egamma_start} ${Egamma_end}" >> ${batch}
     fi
     echo "MAIL: ${USER}@jlab.org" >> ${batch}
     echo "Submitting batch"
