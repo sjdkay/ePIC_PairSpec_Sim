@@ -55,7 +55,7 @@ if [ ! -d "/volatile/eic/${USER}" ]; then
     fi
 fi
 
-OutputPath="/volatile/eic/${USER}/" # Specify your output path
+OutputPath="/volatile/eic/${USER}" # Specify your output path
 if [ ! -d $OutputPath ]; then
     echo "It looks like the output path doesn't exist."
     echo "The script thinks this should be - ${OutputPath}"
